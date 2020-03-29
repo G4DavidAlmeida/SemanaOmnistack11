@@ -1,12 +1,28 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useHistory } from 'react-router-dom';
 
 import './styles.css';
 import { FiArrowLeft } from 'react-icons/fi';
+import api from "../../services/api";
 
 import logoImg from '../../assets/logo.svg';
 
 export default function NewIncident () {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [value, setValue] = useState('');
+    const history = useHistory();
+
+    function handleNewIncident (event) {
+        event.preventDefault();
+        const ongId = localStorage.getItem('ongId')
+        api.post('/incidents', 
+            {title, description, value},
+            { headers: { Authorization: ongId } }
+        )
+        .then(() => history.push('/profile'))
+        .catch(() => alert('Erro ao criar novo registro'))
+    }
     return (
         <div className="new-incident-container">
             <div className="content">
@@ -19,17 +35,29 @@ export default function NewIncident () {
                         um herói para resolver isso.
                     </p>
 
-                    <Link className="back-link" to="/">
+                    <Link className="back-link" to="/profile">
                         <FiArrowLeft size={16} color="#e02041" />
                         Voltar para home
                     </Link>
                 </section>
-                <form>
-                    <input placeholder="Título do caso" />
+                <form onSubmit={handleNewIncident}>
+                    <input
+                        value={title}
+                        onChange={event => setTitle(event.target.value)}
+                        placeholder="Título do caso"
+                    />
 
-                    <textarea placeholder="Descrição"></textarea>
+                    <textarea
+                        value={description}
+                        onChange={event => setDescription(event.target.value)}
+                        placeholder="Descrição"
+                    ></textarea>
 
-                    <input placeholder="Valor em reais" />
+                    <input
+                        value={value}
+                        onChange={event => setValue(event.target.value)}
+                        placeholder="Valor em reais"
+                    />
 
                     <button className="button" type="submit">
                         Cadastrar
