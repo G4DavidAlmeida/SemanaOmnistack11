@@ -17,5 +17,4 @@ app.use(cors());
 app.use('/', require('./routes'));
 app.use(errors())
 
-const port = process.env.PORT || 3333;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+module.exports = app;
